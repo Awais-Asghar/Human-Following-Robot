@@ -1,12 +1,11 @@
-# Line-Following Robot with IR Sensors and Motor Control
+# Human-Following Robot
 
 ## Overview
 
-This project uses an Arduino to create a line-following robot. The robot uses three IR sensors to detect the path and control the motors to follow the line. Additionally, the robot stops when a human is detected using the IR sensors.
+This project uses an Arduino to create a human-following robot. The robot uses three IR sensors to detect the path and control the motors to follow the line. Additionally, the robot stops when a human is detected using the IR sensors.
 
 ## Features
 
-- **Line Following**: The robot follows a line using three IR sensors.
 - **Motor Control**: The robot has precise control over its motors to move forward, turn left, or turn right.
 - **Human Detection**: The robot stops when a human is detected using the IR sensors.
 
@@ -167,15 +166,7 @@ void stopMotors() {
 }
 ```
 
-### Human Detection
 
-If the middle IR sensor detects an obstacle, such as a human, the robot stops to avoid a collision. This is done by checking the value of `Middle_IR_Value` in the `loop()` function.
-
-```cpp
-if (Middle_IR_Value == LOW) {
-  stopMotors();
-}
-```
 
 ## Installation
 
@@ -193,8 +184,9 @@ if (Middle_IR_Value == LOW) {
 
 1. Power on the robot.
 2. Place the robot on a line track.
-3. The robot will follow the line based on the IR sensor readings.
-4. The robot will stop if the middle IR sensor detects an obstacle (e.g., a human).
+4. The robot will move right if right IR Sensor detects human.
+5. The robot will move left if left IR Sensor detects human.
+6. The robot will move forward if middle IR Sensor detects human.
 
 ## Customization
 
