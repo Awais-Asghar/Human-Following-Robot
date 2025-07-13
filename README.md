@@ -1,208 +1,154 @@
-# Human-Following Robot
+# Human Following Robot
 
-## Overview
+![Project Status](https://img.shields.io/badge/Status-Completed-brightgreen.svg)
+![Sensors](https://img.shields.io/badge/Sensors-IR%20Sensors-yellow.svg)
+![Platform](https://img.shields.io/badge/Platform-Arduino-blue.svg)
+![Language](https://img.shields.io/badge/Language-C%2FC%2B%2B-00599C.svg)
+![IDE](https://img.shields.io/badge/IDE-Arduino%20IDE-success.svg)
+![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)
 
-This project uses an Arduino to create a human-following robot. The robot uses three IR sensors to detect the path and control the motors to follow the line. Additionally, the robot stops when a human is detected using the IR sensors.
+<img width="1688" height="1125" alt="Image" src="https://github.com/user-attachments/assets/e807667a-763a-459d-b979-2d9e546bfd37" />
 
-## Features
+---
 
-- **Motor Control**: The robot has precise control over its motors to move forward, turn left, or turn right.
-- **Human Detection**: The robot stops when a human is detected using the IR sensors.
 
-## Components
+##  Overview / Introduction
 
-- Arduino
-- IR Sensors (3)
-- Motor Driver (L298N or similar)
-- Motors (2)
-- Chassis
-- Wheels
-- Power Supply (Battery pack)
-- Connecting wires
+The **Human Following Robot** is a simple and intelligent robot that uses **three infrared sensors** to follow a person (or any black path/leg) by detecting direction and movement. This project utilizes an Arduino Uno, IR sensors, and a motor driver to dynamically control the robot's motion — forward, left, or right — based on the relative position of a moving object or a central signal detected by the IR sensors.
+
+
+##  Features
+
+-  Follows a person or object using three IR sensors
+-  Smart decision-making: turns left, right, or moves straight
+-  Controlled by L298N Motor Driver
+-  Real-time detection using digital IR sensors
+-  Easy to build and modify
+
+
+## Hardware Components
+
+| Component          | Quantity |
+|-------------------|----------|
+| Arduino UNO       | 1        |
+| IR Sensors        | 3        |
+| L298N Motor Driver| 1        |
+| DC Motors         | 2        |
+| Robot Chassis     | 1        |
+| Wheels            | 2        |
+| Jumper Wires      | -        |
+| Power Supply (Battery Pack) | 1 |
+
+
+## Software Requirements
+
+- Arduino IDE
+- Arduino Board Library
+- USB Cable for Arduino
+- Serial Monitor (for debugging, optional)
+
 
 ## Pin Configuration
 
-### Motor Control Pins
+| Function              | Arduino Pin |
+|-----------------------|-------------|
+| Left IR Sensor        | D3          |
+| Right IR Sensor       | D2          |
+| Middle IR Sensor      | D4          |
+| Left Motor Enable     | D10         |
+| Left Motor IN1        | D9          |
+| Left Motor IN2        | D8          |
+| Right Motor Enable    | D5          |
+| Right Motor IN1       | D7          |
+| Right Motor IN2       | D6          |
 
-- **Enable Pins**: These pins control the speed of the motors using PWM (Pulse Width Modulation). The enable pins are connected to the PWM-capable pins on the Arduino.
-  - `enableLeftMotor` (Pin 10): Controls the speed of the left motor.
-  - `enableRightMotor` (Pin 5): Controls the speed of the right motor.
 
-- **Control Pins**: These pins control the direction of the motors.
-  - **Left Motor**:
-    - `leftMotorPin1` (Pin 9): Controls the direction of the left motor (connected to motor driver In1).
-    - `leftMotorPin2` (Pin 8): Controls the direction of the left motor (connected to motor driver In2).
-  - **Right Motor**:
-    - `rightMotorPin1` (Pin 7): Controls the direction of the right motor (connected to motor driver In3).
-    - `rightMotorPin2` (Pin 6): Controls the direction of the right motor (connected to motor driver In4).
+## Decision-Making Logic
 
-### IR Sensor Pins
+- **Middle IR sensor LOW** → Go **Forward**
+- **Left IR sensor LOW**, Right HIGH → Turn **Left**
+- **Right IR sensor LOW**, Left HIGH → Turn **Right**
+- **All sensors HIGH** → **Stop** (Lost track)
 
-- `Left_IR` (Pin 3): Reads the input from the left IR sensor.
-- `Right_IR` (Pin 2): Reads the input from the right IR sensor.
-- `Middle_IR` (Pin 4): Reads the input from the middle IR sensor.
 
-## Code Explanation
+## Function Descriptions
 
-### Define Constants
+- `goForward()` — Sets both motors to move forward at defined speed
+- `turnLeft()` — Rotates the robot to the left
+- `turnRight()` — Rotates the robot to the right
+- `stopMotors()` — Halts all motor movement
 
+
+## How to Run
+
+1. Assemble all components as per the wiring table.
+2. Open Arduino IDE and paste the code.
+3. Upload the code to your Arduino UNO board.
+4. Place the robot in front of a human leg or dark object.
+5. Power the robot and watch it follow the target!
+
+
+## Sensors & Motor Driver Explained
+
+### IR Sensors
+
+The robot uses three **IR sensors** (Left, Middle, Right) to detect reflected IR light. These sensors work based on infrared reflection:
+
+- **White/Reflective surface** → Reflects IR → Sensor reads **LOW**
+- **Black/Absorptive surface (like clothes)** → Absorbs IR → Sensor reads **HIGH**
+- The robot compares values from all three sensors to detect which direction to move in to follow a person or leg.
+
+
+###  L298N Motor Driver
+
+The **L298N Module** is a dual H-bridge motor driver used to control the speed and direction of two DC motors. It allows independent control of each motor using:
+
+- **Enable Pins (ENA/ENB)** for PWM speed control.
+- **IN1, IN2, IN3, IN4** for direction control.
+
+Example:
 ```cpp
-#define Forward_Speed 250
-#define Turn_Speed 220
-
-#define Left_IR 3
-#define Right_IR 2
-#define Middle_IR 4
-
-int enableLeftMotor = 10;
-int leftMotorPin1 = 9;
-int leftMotorPin2 = 8;
-
-int enableRightMotor = 5;
-int rightMotorPin1 = 7;
-int rightMotorPin2 = 6;
+digitalWrite(IN1, HIGH);
+digitalWrite(IN2, LOW);  // Motor moves forward
 ```
 
-### Setup Function
+## Demonstration
 
-The `setup()` function initializes the robot by setting up the serial communication, configuring the motor control pins as outputs, and the IR sensor pins as inputs. It also stops the motors initially to ensure the robot does not start moving unexpectedly.
-
-```cpp
-void setup() {
-  Serial.begin(9600);
-
-  pinMode(enableRightMotor, OUTPUT);
-  pinMode(rightMotorPin1, OUTPUT);
-  pinMode(rightMotorPin2, OUTPUT);
-  pinMode(enableLeftMotor, OUTPUT);
-  pinMode(leftMotorPin1, OUTPUT);
-  pinMode(leftMotorPin2, OUTPUT);
-
-  pinMode(Right_IR, INPUT);
-  pinMode(Left_IR, INPUT);
-  pinMode(Middle_IR, INPUT);
-
-  stopMotors();
-}
-```
-
-### Loop Function
-
-The `loop()` function continuously reads the values from the IR sensors and decides the movement of the robot based on these inputs. If the middle IR sensor detects an obstacle (e.g., a human), the robot stops.
-
-```cpp
-void loop() {
-  int rightIRSensorValue = digitalRead(Right_IR);
-  int leftIRSensorValue = digitalRead(Left_IR);
-  int Middle_IR_Value = digitalRead(Middle_IR);
-
-  if (rightIRSensorValue == LOW && leftIRSensorValue == HIGH) {
-    turnRight();
-  } else if (rightIRSensorValue == HIGH && leftIRSensorValue == LOW) {
-    turnLeft();
-  } else if (Middle_IR_Value == LOW) {
-    goForward();
-  } else {
-    stopMotors();
-  }
-}
-```
-
-### Motor Control Functions
-
-#### Move Forward
-
-The `goForward()` function sets the motor control pins to move the robot forward. Both motors are set to rotate in the same direction with the specified speed (`Forward_Speed`).
-
-```cpp
-void goForward() {
-  digitalWrite(rightMotorPin1, HIGH);
-  digitalWrite(rightMotorPin2, LOW);
-  digitalWrite(leftMotorPin1, HIGH);
-  digitalWrite(leftMotorPin2, LOW);
-  analogWrite(enableRightMotor, Forward_Speed);
-  analogWrite(enableLeftMotor, Forward_Speed);
-}
-```
-
-#### Turn Left
-
-The `turnLeft()` function sets the motor control pins to turn the robot left. The right motor moves forward while the left motor moves backward, causing the robot to turn.
-
-```cpp
-void turnLeft() {
-  digitalWrite(rightMotorPin1, HIGH);
-  digitalWrite(rightMotorPin2, LOW);
-  digitalWrite(leftMotorPin1, LOW);
-  digitalWrite(leftMotorPin2, HIGH);
-  analogWrite(enableRightMotor, Turn_Speed);
-  analogWrite(enableLeftMotor, Turn_Speed);
-}
-```
-
-#### Turn Right
-
-The `turnRight()` function sets the motor control pins to turn the robot right. The left motor moves forward while the right motor moves backward, causing the robot to turn.
-
-```cpp
-void turnRight() {
-  digitalWrite(rightMotorPin1, LOW);
-  digitalWrite(rightMotorPin2, HIGH);
-  digitalWrite(leftMotorPin1, HIGH);
-  digitalWrite(leftMotorPin2, LOW);
-  analogWrite(enableRightMotor, Turn_Speed);
-  analogWrite(enableLeftMotor, Turn_Speed);
-}
-```
-
-#### Stop Motors
-
-The `stopMotors()` function stops both motors by setting the speed to 0.
-
-```cpp
-void stopMotors() {
-  analogWrite(enableRightMotor, 0);
-  analogWrite(enableLeftMotor, 0);
-}
-```
+The robot will continuously monitor IR input and follow a dark object/person as long as it's in front of the middle sensor.
 
 
+## Applications
 
-## Installation
+- Human-following carts or luggage  
+- Shopping assistants in stores  
+- Personal delivery bots  
+- Educational robotic kits  
 
-1. **Hardware Setup**:
-    - Connect the IR sensors to the specified pins.
-    - Connect the motors and motor driver to the Arduino.
-    - Ensure the power supply to the motors and the Arduino is correctly set up.
 
-2. **Software Setup**:
-    - Install the Arduino IDE.
-    - Open the provided `.ino` file in the Arduino IDE.
-    - Upload the code to the Arduino board.
+## Future Improvements
 
-## Usage
+- ➕ Add **Ultrasonic sensors** to avoid obstacles while following  
+- ➕ Implement **PID control** for smoother and more accurate tracking  
+- ➕ Add **Bluetooth or Wi-Fi** for remote override control  
+- ➕ Upgrade to **vision-based tracking** using OpenCV or AI camera  
+- ➕ Use **rechargeable Li-ion batteries** for long runtime  
 
-1. Power on the robot.
-2. Place the robot on a line track.
-4. The robot will move right if right IR Sensor detects human.
-5. The robot will move left if left IR Sensor detects human.
-6. The robot will move forward if middle IR Sensor detects human.
 
-## Customization
+## Troubleshooting / Common Issues
 
-- **Adjusting Speed**: Modify the `Forward_Speed` and `Turn_Speed` constants to change the robot's speed.
-- **Sensor Sensitivity**: Adjust the thresholds in the `loop()` function to fine-tune the sensor readings.
+-  **Robot not moving** → Check motor power supply and enable pins.  
+-  **Sensors not responding** → Ensure proper alignment and correct logic levels.  
+-  **Wrong turns** → Swap motor direction pins or verify sensor logic.  
+-  **Low speed or stalling** → Check battery voltage and motor connections.  
 
-## Troubleshooting
 
-- **Robot Not Moving**: Check the motor connections and ensure the enable pins are correctly configured.
-- **Sensors Not Detecting Line**: Verify the sensor connections and adjust the sensor thresholds if necessary.
-- **Robot Not Stopping for Obstacles**: Ensure the middle IR sensor is functioning and properly connected.
+##  Credits / Acknowledgements
+
+Developed by **Awais Asghar**  and **Muhammad Abdullah**
+
 
 ## License
 
-This project is licensed under the MIT License. Feel free to modify and distribute as per the license terms.
+This project is licensed under the **MIT License**. You are free to use, modify, and distribute it with attribution.
 
-## Acknowledgments
-
-Special thanks to the contributors of the libraries used in this project.
+---
