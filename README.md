@@ -3,8 +3,8 @@
 ![Project Status](https://img.shields.io/badge/Status-Completed-brightgreen.svg)
 ![Sensors](https://img.shields.io/badge/Sensors-IR%20Sensors-yellow.svg)
 ![Platform](https://img.shields.io/badge/Platform-Arduino-blue.svg)
-![Language](https://img.shields.io/badge/Language-C%2FC%2B%2B-00599C.svg)
-![IDE](https://img.shields.io/badge/IDE-Arduino%20IDE-success.svg)
+![Language](https://img.shields.io/badge/Language-C%2FC%2B%2B-ff69b4.svg)
+![IDE](https://img.shields.io/badge/IDE-Arduino%20IDE-9cf.svg)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)
 
 <img width="1688" height="1125" alt="Image" src="https://github.com/user-attachments/assets/e807667a-763a-459d-b979-2d9e546bfd37" />
