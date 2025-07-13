@@ -33,9 +33,9 @@ The **Human Following Robot** is a simple and intelligent robot that uses **thre
 | Arduino UNO       | 1        |
 | IR Sensors        | 3        |
 | L298N Motor Driver| 1        |
-| DC Motors         | 2        |
+| DC Motors         | 4        |
 | Robot Chassis     | 1        |
-| Wheels            | 2        |
+| Wheels            | 4        |
 | Jumper Wires      | -        |
 | Power Supply (Battery Pack) | 1 |
 
@@ -98,13 +98,25 @@ The robot uses three **IR sensors** (Left, Middle, Right) to detect reflected IR
 - **Black/Absorptive surface (like clothes)** → Absorbs IR → Sensor reads **HIGH**
 - The robot compares values from all three sensors to detect which direction to move in to follow a person or leg.
 
+![Image](https://github.com/user-attachments/assets/fc077446-e137-4352-8a82-34e10b2a96f1)
 
-###  L298N Motor Driver
+---
 
-The **L298N Module** is a dual H-bridge motor driver used to control the speed and direction of two DC motors. It allows independent control of each motor using:
+## L298N Motor Driver
 
-- **Enable Pins (ENA/ENB)** for PWM speed control.
-- **IN1, IN2, IN3, IN4** for direction control.
+The **L298N Motor Driver Module** is used to control the two **DC motors** of the robot. It acts as an interface between the low-power Arduino and the high-power motors.
+
+### Features:
+
+- Can control the **direction and speed** of two DC motors.
+- Accepts **PWM (Pulse Width Modulation)** signals from Arduino to adjust motor speed.
+- Has two enable pins (**ENA, ENB**) and four control pins (**IN1, IN2, IN3, IN4**) connected to the Arduino.
+
+### Working:
+
+- **ENA / ENB**: Used to control the speed of motors via `analogWrite()`.
+- **IN1/IN2** (for Motor A) and **IN3/IN4** (for Motor B): Used to control motor direction via `digitalWrite()`.
+
 
 Example:
 ```cpp
@@ -112,9 +124,74 @@ digitalWrite(IN1, HIGH);
 digitalWrite(IN2, LOW);  // Motor moves forward
 ```
 
+<img width="1016" height="747" alt="Image" src="https://github.com/user-attachments/assets/f7151af1-5946-4e09-8b7e-d96e9a3b8345" />
+<img width="1311" height="870" alt="Image" src="https://github.com/user-attachments/assets/e4d59f72-7b72-4451-b27b-134360b59a04" />
+<img width="1035" height="852" alt="Image" src="https://github.com/user-attachments/assets/9ce49fdc-ee98-4d96-85a5-db16a9bd71ec" />
+
+---
+
+
+## How to Charge Lithium-Ion
+
+### What You Need:
+- **TP4056 charging module** (with or without protection circuit)
+- **Lithium-Ion battery** (typically 3.7V, like an 18650 cell)
+- **Power source** (5V via USB cable or 5V adapter)
+
+###  Wiring Connections
+
+| TP4056 Pin | Connects To           | Description                      |
+|------------|-----------------------|----------------------------------|
+| **BAT+**   | Battery Positive (+)  | Connect to battery's positive terminal |
+| **BAT-**   | Battery Negative (–)  | Connect to battery's negative terminal |
+| **IN+**    | 5V Power Positive     | USB VCC or 5V adapter            |
+| **IN-**    | 5V Power Ground       | USB GND or adapter GND           |
+| **OUT+**   | Output Positive (Optional) | Same as BAT+ if present     |
+| **OUT-**   | Output Negative (Optional) | Same as BAT– if present     |
+
+
+### Charging Status (LED Indicators)
+
+- 🔴 **Red LED ON** → Charging
+- 🟢 **Blue/Green LED ON** → Fully Charged (approx. 4.2V)
+
+### TP4056 Specifications
+
+- **Input Voltage:** 4.5V – 5.5V (recommended: 5V)
+- **Charging Cut-off Voltage:** 4.2V
+- **Max Charging Current:** 1A (default, adjustable by changing onboard resistor)
+
+### Charging Steps
+
+1. Connect **BAT+** and **BAT-** to the Lithium-ion battery terminals.
+2. Connect **IN+** and **IN-** to a 5V power supply (USB or adapter).
+3. Observe LED indicators:
+   - Red = Charging
+   - Green/Blue = Fully Charged
+4. Disconnect power once fully charged (unless using protected module).
+
+
+### Safety Tips
+
+-  Never leave charging unattended.
+-  Use only **genuine 3.7V Li-ion batteries**.
+-  Avoid **short circuits** on BAT terminals.
+-  **Do not reverse polarity** — it can damage the module and the battery.
+-  Use **TP4056 with protection** for safer charging and discharging.
+
+![Image](https://github.com/user-attachments/assets/41a1097a-51ed-4429-9e1f-69d014f84bbe)
+
+
+---
 ## Demonstration
 
 The robot will continuously monitor IR input and follow a dark object/person as long as it's in front of the middle sensor.
+
+![Image](https://github.com/user-attachments/assets/db5a8cd0-b382-4457-86eb-360212a6631b)
+![Image](https://github.com/user-attachments/assets/2e7a034a-ea8a-472a-95c6-e72cb3c219ac)
+![Image](https://github.com/user-attachments/assets/f01996ca-c88c-40b3-aa25-88b4d33d83d6)
+
+---
 
 
 ## Applications
@@ -141,6 +218,11 @@ The robot will continuously monitor IR input and follow a dark object/person as 
 -  **Wrong turns** → Swap motor direction pins or verify sensor logic.  
 -  **Low speed or stalling** → Check battery voltage and motor connections.  
 
+## Demo Video
+
+https://github.com/user-attachments/assets/1a332b06-d684-478d-a12b-91c1f452c24d 
+
+---
 
 ##  Credits / Acknowledgements
 
