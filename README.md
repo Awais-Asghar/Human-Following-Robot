@@ -204,11 +204,10 @@ The robot will continuously monitor IR input and follow a dark object/person as 
 
 ## Future Improvements
 
-- ➕ Add **Ultrasonic sensors** to avoid obstacles while following  
-- ➕ Implement **PID control** for smoother and more accurate tracking  
-- ➕ Add **Bluetooth or Wi-Fi** for remote override control  
-- ➕ Upgrade to **vision-based tracking** using OpenCV or AI camera  
-- ➕ Use **rechargeable Li-ion batteries** for long runtime  
+ ➕ Implement **PID control** for smoother and more accurate tracking  
+ ➕ Add **Bluetooth or Wi-Fi** for remote override control  
+ ➕ Upgrade to **vision-based tracking** using OpenCV or AI camera  
+ ➕ Use **rechargeable Li-ion batteries** for long runtime  
 
 
 ## Troubleshooting / Common Issues
